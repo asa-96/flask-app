@@ -20,16 +20,16 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    withDockerRegistry(credentialsId: 'docker-creds') {
-                        dockerImage.push("${env.BUILD_ID}")
-                        dockerImage.push("latest")
-                    }
-                }
-            }
-        }
+        // stage('Push Docker Image') {
+        //     steps {
+        //         script {
+        //             withDockerRegistry(credentialsId: 'docker-creds') {
+        //                 dockerImage.push("${env.BUILD_ID}")
+        //                 dockerImage.push("latest")
+        //             }
+        //         }
+        //     }
+        // }
 
         // stage('Deploy to Docker') {
         //     steps {
