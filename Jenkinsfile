@@ -18,9 +18,14 @@ pipeline {
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('Checkout Source Branch') {
             steps {
-                checkout scm
+                script {
+                    // Explicitly checkout the source branch from the specified repository
+                    checkout([$class: 'GitSCM', 
+                             branches: [[name: env.SOURCE_BRANCH]], 
+                             userRemoteConfigs: [[url: 'https://github.com/asa-96/flask-app.git']]])
+                }
             }
         }
 
@@ -32,15 +37,15 @@ pipeline {
             }
         }
 
-        stage('Push Docker image') {
+        stage('Push Docker Image') {
             when {
                 expression { false }
             }
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'docker-creds') {
-                        dockerImage.push("${env.BUILD_ID}")
-                        dockerImage.push("latest")
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-creds') {
+                        dockerImage.push("${DOCKER_IMAGE}:${env.BUILD_ID}")
+                        dockerImage.push("${DOCKER_IMAGE}:latest")
                     }
                 }
             }
@@ -57,8 +62,17 @@ pipeline {
             }
         }
     }
+
     post {
+        success {
+            script {
+                // Perform actions after a successful build
+                echo 'Pipeline succeeded! Sending notifications...'
+            }
+        }
+        
         always {
+            // Clean workspace after each run
             cleanWs()
         }
     }
