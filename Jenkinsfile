@@ -1,17 +1,17 @@
 pipeline {
     agent any 
     
-    triggers {
-        GenericTrigger(
-            genericVariables: [
-                [ key: 'SOURCE_BRANCH', value: '$.pull_request.head.ref' ],
-                [ key: 'TARGET_BRANCH', value: '$.pull_request.base.ref' ]
-            ],
-            causeString: 'Pull Request Trigger',
-            printContributedVariables: true,
-            token: 'test123'
-        )
-    }
+    // triggers {
+    //     GenericTrigger(
+    //         genericVariables: [
+    //             [ key: 'SOURCE_BRANCH', value: '$.pull_request.head.ref' ],
+    //             [ key: 'TARGET_BRANCH', value: '$.pull_request.base.ref' ]
+    //         ],
+    //         causeString: 'Pull Request Trigger',
+    //         printContributedVariables: true,
+    //         token: 'test123'
+    //     )
+    // }
 
     environment {
         DOCKER_IMAGE = 'asa96/flask-docker-app'
@@ -23,7 +23,7 @@ pipeline {
                 script {
                     // Explicitly checkout the source branch from the specified repository
                     checkout([$class: 'GitSCM', 
-                             branches: [[name: 'main']], 
+                             branches: [[name: env.SOURCE_BRANCH]], 
                              userRemoteConfigs: [[url: 'https://github.com/asa-96/flask-app.git']]])
                 }
             }
