@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git url: 'https://github.com/asa-96/flask-app.git', branch: 'main'
+                checkout scm
             }
         }
 
@@ -20,24 +20,30 @@ pipeline {
             }
         }
 
-        // stage('Push Docker Image') {
-        //     steps {
-        //         script {
-        //             withDockerRegistry(credentialsId: 'docker-creds') {
-        //                 dockerImage.push("${env.BUILD_ID}")
-        //                 dockerImage.push("latest")
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Push Docker false') {
+            when {
+                expression { true }
+            }
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'docker-creds') {
+                        dockerImage.push("${env.BUILD_ID}")
+                        dockerImage.push("latest")
+                    }
+                }
+            }
+        }
 
-        // stage('Deploy to Docker') {
-        //     steps {
-        //         script {
-        //             dockerImage.run("-p 5000:5000")
-        //         }
-        //     }
-        // }
+        stage('Deploy to Docker') {
+            when {
+                expression { false }
+            }
+            steps {
+                script {
+                    dockerImage.run("-p 5000:5000")
+                }
+            }
+        }
     }
 
     post {
