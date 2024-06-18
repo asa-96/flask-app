@@ -23,7 +23,7 @@ pipeline {
                 script {
                     // Explicitly checkout the source branch from the specified repository
                     checkout([$class: 'GitSCM', 
-                             branches: [[name: env.SOURCE_BRANCH]], 
+                             branches: [[name: 'main']], 
                              userRemoteConfigs: [[url: 'https://github.com/asa-96/flask-app.git']]])
                 }
             }
