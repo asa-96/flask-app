@@ -20,9 +20,9 @@ pipeline {
             }
         }
 
-        stage('Push Docker false') {
+        stage('Push Docker image') {
             when {
-                expression { true }
+                expression { false }
             }
             steps {
                 script {
